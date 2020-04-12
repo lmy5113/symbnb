@@ -15,7 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class AccountController extends AbstractController
 {
     /**
@@ -64,7 +65,7 @@ class AccountController extends AbstractController
         ]);
     }
     /**
-     * 
+     *@IsGranted("ROLE_USER") 
      *@Route("/account/profile", name="account_profile")
      * 
      */
@@ -87,6 +88,7 @@ class AccountController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/account/password-update", name="account_password")
      */
     public function updatePassword(Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder) {
@@ -119,6 +121,7 @@ class AccountController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/account", name="account_index")
      *
      */

@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AdController extends AbstractController
 {
@@ -28,6 +30,8 @@ class AdController extends AbstractController
     }
 
     /**
+     * role control example
+     * @IsGranted("ROLE_USER")
      * create an annonce
      * @Route("/ads/new", name="ads_create")
      *
@@ -62,6 +66,7 @@ class AdController extends AbstractController
     }
 
     /**
+     * @Security("is_granted('ROLE_USER') and user === ad.getAuthor()", message = "Cette annonce vous appartient pas")
      * @Route("/ads/{slug}/edit", name="ads_edit")
      *
      */
@@ -103,5 +108,19 @@ class AdController extends AbstractController
         return $this->render('ad/show.html.twig', [
             'ad' => $ad
         ]);
+    }
+
+    /**
+     * @Route("/ads/{slug}/delete", name="ads_delete")
+     * @Security("is_granted('ROLE_USER') and user == ad.getAuthor()")
+     */
+    public function delete(Ad $ad, EntityManagerInterface $manager)
+    {
+        $manager->remove($ad);
+        $manager->flush();
+
+        $this->addFlash('success', "L'annonce {$ad->getTitle()} a bien été supprimé");
+
+        return $this->redirectToRoute("ads_index");
     }
 }
