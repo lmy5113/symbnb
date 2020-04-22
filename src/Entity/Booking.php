@@ -34,7 +34,7 @@ class Booking
     /**
      * @ORM\Column(type="datetime")
      * @Assert\Type("\DateTimeInterface")
-     * @Assert\GreaterThan("today", message="ultérieur qu'aujourd'hui")
+     * @Assert\GreaterThan("today", message="ultérieur qu'aujourd'hui", groups={"front"})
      */
     private $startDate;
 

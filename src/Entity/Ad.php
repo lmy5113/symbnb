@@ -80,10 +80,16 @@ class Ad
      */
     private $bookings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="ad", orphanRemoval=true)
+     */
+    private $comments;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -274,7 +280,7 @@ class Ad
         $notAvailableDays = [];
         foreach ($this->bookings as $booking) {
             $result = range($booking->getStartDate()->getTimestamp(), $booking->getEndDate()->getTimestamp(), 24 * 60 * 60);
-            $days = array_map(function($dayTimestamp) {
+            $days = array_map(function ($dayTimestamp) {
                 return new \DateTime(date('Y-m-d', $dayTimestamp));
             }, $result);
 
@@ -282,5 +288,71 @@ class Ad
         }
 
         return $notAvailableDays;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getAd() === $this) {
+                $comment->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+    /**
+     * Undocumented function
+     *
+     * @return integer
+     */
+    public function getAvgRatings(): int
+    {
+        if (count($this->comments) == 0) {
+            return 0;
+        }
+        $sum = array_reduce($this->comments->toArray(), function ($total, $comment) {
+            return $total + $comment->getRating();
+        }, 0);
+
+        $moyenne = $sum / count($this->comments);
+
+        return $moyenne;
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param User $author
+     * @return null|Comment
+     */
+    public function getCommentFromAuthor(User $author) : ?Comment
+    {
+        foreach ($this->comments as $comment) {
+            if ($comment->getAuthor() == $author) {
+                return $comment;
+            }
+        }
+
+        return null;
     }
 }
