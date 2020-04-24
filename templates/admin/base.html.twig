@@ -6,8 +6,7 @@
 		<title>
         SymBnB - {% block title %}{% endblock %}
 		</title>
-		<link rel="stylesheet" href="/css/bootstrap.min.css">
-		<link rel="stylesheet" href="/css/app.css">
+		{{ encore_entry_link_tags('css/app') }}
 		 {% block stylesheets %}{% endblock %}
 		</head>
 		<body>
@@ -15,9 +14,7 @@
 			{% block body %}{% endblock %}
 			{% include 'admin/partials/footer.html.twig' %}
 
-			<script src="/js/jquery.min.js"></script>
-			<script src="/js/propper.min.js"></script>
-			<script src="/js/bootstrap.min.js"></script>
+			{{ encore_entry_script_tags('js/app') }}
 			<script src="https://kit.fontawesome.com/63e696dbc9.js" crossorigin="anonymous"></script>
 			{% block javascripts %}{% endblock %}
 		</body>
