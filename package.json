@@ -17,7 +17,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "jsdom": "^16.2.2",
+        "jsdom": "^16.5.0",
         "node-sass": "^4.14.0",
         "sass-loader": "^8.0.2"
     }
